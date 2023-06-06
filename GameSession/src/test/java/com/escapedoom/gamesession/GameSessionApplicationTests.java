@@ -6,11 +6,7 @@ import org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class GameSessionApplicationTests {
-
-    @Test
-    void contextLoads() {
-    }
-    
+   
     @Test
     void alwaysTrueTest() {
         assertTrue(true);
