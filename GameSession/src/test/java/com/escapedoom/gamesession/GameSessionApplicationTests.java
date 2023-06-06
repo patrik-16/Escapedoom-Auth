@@ -9,6 +9,10 @@ class GameSessionApplicationTests {
 
     @Test
     void contextLoads() {
+    }
+    
+    @Test
+    void alwaysTrueTest() {
         assertTrue(true);
     }
 }
