@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('maven install') {
+            steps {
+                echo 'maven install...'
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: '', mavenSettingsConfig: '', traceability: true) {
+                sh 'mvn clean install'
+                }
+            }
+        }
+
+        stage('test') {
+            steps {
+                echo 'maven test...'
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: '', mavenSettingsConfig: '', traceability: true) {
+                sh 'mvn test'
+                }
+            }
+        }
+
+        stage('deploy') {
+            steps {
+                echo 'maven deploay...'
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: '', mavenSettingsConfig: '', traceability: true) {
+                sh 'mvn deploy'
+                }
+                echo 'Done!'
+            }
+        }
+    }
+}
