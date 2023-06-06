@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('maven install') {
+        stage('install') {
             steps {
                 echo 'maven install...'
                 dir('GameSession') {
@@ -16,8 +16,10 @@ pipeline {
         stage('test') {
             steps {
                 echo 'maven test...'
-                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                sh 'mvn test'
+                dir('GameSession') {
+                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn test'
+                    }
                 }
             }
         }
@@ -25,8 +27,10 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'maven deploay...'
-                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                sh 'mvn deploy'
+                dir('GameSession') {
+                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn deploy'
+                    }
                 }
                 echo 'Done!'
             }
