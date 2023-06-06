@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class GameSessionApplicationTests {
 
     @Test
-    void contextLoads() {
+    void alwaysTrueTest() {
+        assertTrue(true);
     }
 
 }
