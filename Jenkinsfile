@@ -5,7 +5,7 @@ pipeline {
         stage('maven install') {
             steps {
                 echo 'maven install...'
-                dir('Escapedoom-Auth/GameSession') {
+                dir('GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn clean install'
                     }
