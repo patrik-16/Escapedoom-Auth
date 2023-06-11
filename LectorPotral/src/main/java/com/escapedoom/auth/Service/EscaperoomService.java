@@ -1,5 +1,6 @@
 package com.escapedoom.auth.Service;
 
+import com.escapedoom.auth.data.dataclasses.Requests.RegisterRequest;
 import com.escapedoom.auth.data.dataclasses.models.escaperoom.*;
 import com.escapedoom.auth.data.dataclasses.models.escaperoom.nodes.*;
 import com.escapedoom.auth.data.dataclasses.models.escaperoom.nodes.console.ConsoleNodeInfo;
@@ -7,10 +8,7 @@ import com.escapedoom.auth.data.dataclasses.models.escaperoom.nodes.console.Data
 import com.escapedoom.auth.data.dataclasses.models.escaperoom.nodes.console.DetailsNodeInfo;
 import com.escapedoom.auth.data.dataclasses.models.escaperoom.nodes.console.ZoomNodeInfo;
 import com.escapedoom.auth.data.dataclasses.models.user.User;
-import com.escapedoom.auth.data.dataclasses.repositories.CodeRiddleRepository;
-import com.escapedoom.auth.data.dataclasses.repositories.EscaperoomRepository;
-import com.escapedoom.auth.data.dataclasses.repositories.LobbyRepository;
-import com.escapedoom.auth.data.dataclasses.repositories.TestRepo;
+import com.escapedoom.auth.data.dataclasses.repositories.*;
 import com.escapedoom.auth.data.dtos.EscaperoomDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.OkHttpClient;
@@ -41,6 +39,10 @@ public class EscaperoomService {
 
     private final EscaperoomRepository escaperoomRepository;
 
+    private final AuthenticationService authenticationService;
+
+    private final UserRepository userRepository;
+
     private final LobbyRepository lobbyRepository;
 
     private final CodeRiddleRepository codeRiddleRepository;
@@ -54,89 +56,30 @@ public class EscaperoomService {
 
     @Transactional
     public EscapeRoomDto createADummyRoom() {
-        var user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Scenes> m = List.of(
-                Scenes.builder()
-                        .name("startScene")
-                        .bgImg("https://www.noen.at/image/1920x1080-c-jpg/2282568/OPIC_007_%28C%29%20FH%20Campus%20Wien-David%20Bohmann%20%28Large%29.jpg")
-                        .nodes(List.of(
-                                        Node.builder()
-                                                .type(NodeType.Console)
-                                                .pos(Position.builder()
-                                                        .x(250)
-                                                        .y(125)
-                                                        .build())
-                                                .nodeInfos(ConsoleNodeInfo.builder()
-                                                        .outputID(12L)
-                                                        .codeSnipped("System.out.println(\"Hello World\")")
-                                                        .desc("I can only try one combination at a time. Find the correct one!")
-                                                        .returnType("4 digit integer")
-                                                        .exampleInput("1234")
-                                                        .png("png.url")
-                                                        .title("INPUT")
-                                                        .build())
-                                                .build(),
-                                        Node.builder()
-                                                .type(NodeType.Details)
-                                                .pos(Position.builder()
-                                                        .x(250)
-                                                        .y(125)
-                                                        .build()
-                                                )
-                                                .nodeInfos(DetailsNodeInfo.builder()
-                                                        .desc("This item is really strange, I wonder if it still works...")
-                                                        .png("https://media.istockphoto.com/id/145132637/de/foto/alte-telefon.jpg?s=612x612&w=0&k=20&c=vKbE1neCPbp1AAdNZuW042vAxt7liMV52tEIAsHNjqs=")
-                                                        .title("An old Phone")
-                                                        .build())
-                                                .build(),
-                                        Node.builder()
-                                                .type(NodeType.Data)
-                                                .pos(Position.builder().x(250).y(125).build()
-                                                )
-                                                .nodeInfos(DataNodeInfo.builder()
-                                                        .title("Object output")
-                                                        .desc("Some story like object description")
-                                                        .parameterType("A string containing the letters")
-                                                        .exampleOutput("ASDFGAIKVNAKSDNFJIVNHAEKW").build())
-                                                .build(),
-                                        Node.builder()
-                                                .type(NodeType.Zoom)
-                                                .pos(Position.builder().x(250).y(125).build()
-                                                )
-                                                .nodeInfos(ZoomNodeInfo.builder().build())
-                                                .build()
-                                )
-                        ).build()
-        );
-        Escaperoom dummy =
-                Escaperoom.builder().user((User) user)
-                        .name("Catch me")
-                        .topic("Yee")
-                        .time(90)
-                        .build();
+        authenticationService.register(
+                RegisterRequest.builder()
+                        .firstname("Leon")
+                        .lastname("FreudenThaler")
+                        .email("leon@escapeddoom.com")
+                        .password("escapeDoom")
+                        .build());
+        authenticationService.register(
+                RegisterRequest.builder()
+                        .firstname("Bernhard")
+                        .lastname("Taufner")
+                        .email("bernhard@escapeddoom.com")
+                        .password("escapeDoom")
+                        .build());
 
-        var m2 = List.of(
-                EscapeRoomStage.builder()
-                        .stageId(1L)
-                        .escaperoom(dummy)
-                        .stage(m)
-                        .build(),
-                EscapeRoomStage.builder()
-                        .stageId(2L)
-                        .escaperoom(dummy)
-                        .stage(m)
-                        .build()
-        );
+        createADummyRoomForStart(userRepository.findByEmail("bernhard@escapeddoom.com").get());
+        createADummyRoomForStart(userRepository.findByEmail("bernhard@escapeddoom.com").get());
+        createADummyRoomForStart(userRepository.findByEmail("bernhard@escapeddoom.com").get());
 
-        dummy.setEscapeRoomStages(m2);
-        escaperoomRepository.save(dummy);
-        return EscapeRoomDto.builder()
-                .escaperoom_id(dummy.getEscaperoom_id())
-                .name(dummy.getName())
-                .topic(dummy.getTopic())
-                .time(dummy.getTime())
-                .escapeRoomStages(dummy.getEscapeRoomStages())
-                .build();
+        createADummyRoomForStart(userRepository.findByEmail("leon@escapeddoom.com").get());
+        createADummyRoomForStart(userRepository.findByEmail("leon@escapeddoom.com").get());
+        createADummyRoomForStart(userRepository.findByEmail("leon@escapeddoom.com").get());
+
+        return null;
     }
 
 
@@ -145,7 +88,11 @@ public class EscaperoomService {
 
         ConsoleNodeCode save = codeRiddleRepository.save(ConsoleNodeCode.builder()
                 .language(CodingLanguage.Java)
-                .functionSignature("public static String solve(String boardInput) {\n\n}")
+                .functionSignature("/**\n" +
+                        "* @param boardInput the input string\n" +
+                        "* @return the message you need\n" +
+                        "*/\n" +
+                        "public static String solve(String boardInput) {\n\n}")
                 .input("public static String boardInput = \"lipps$M$Eq$mrxiviwxih$mr$Wlmjxmrk\"; \n\n")
                 .expectedOutput("hello I Am interested in Shifting")
                 .variableName("boardInput")
@@ -153,7 +100,17 @@ public class EscaperoomService {
 
         ConsoleNodeCode save2 = codeRiddleRepository.save(ConsoleNodeCode.builder()
                 .language(CodingLanguage.Java)
-                .functionSignature("public static int solve(List<List<Boolean>> input) {\n\n}")
+                .functionSignature("/**\n" +
+                        "* @param input is a List of Lists of Booleans \n" +
+                        "*              Example \n" +
+                        "*              [\n" +
+                        "*                  [true,true,false,true],\n" +
+                        "*                  [false,true,false,true,true,true],\n" +
+                        "*                  [true,true],\n" +
+                        "*              ]\n" +
+                        "* @return the current Floor\n" +
+                        "*/\n" +
+                        "public static int solve(List<List<Boolean>> input) {\n\n}")
                 .input("     public static List<List<Boolean>> listOfBinary = List.of(\n" +
                         "                List.of(true, false, false, false, true, true),\n" +
                         "                List.of(true, true, false, false),\n" +
@@ -163,31 +120,31 @@ public class EscaperoomService {
                         "                List.of(true,false,false,true,false,true,false,true,false,false),\n" +
                         "                List.of(true,false,false,false,false,false,false,false),\n" +
                         "                List.of(true,false,false,true,false,false,false,false,true),\n" +
-                        "                List.of(true,false,false,false,true,true,true,true,false)\n" +
+                        "                List.of(true,false,false,false,true,true,true,true,false),\n" +
+                        "                List.of(true,false,false,false,false,true,true,true,true,true,true)\n" +
                         "        ); \n\n")
-                .expectedOutput("4")
+                .expectedOutput("-1")
                 .variableName("listOfBinary")
                 .build());
-
 
 
         List<Scenes> m = List.of(
                 Scenes.builder()
                         .name("startScene")
-                        .bgImg("https://www.noen.at/image/1920x1080-c-jpg/2282568/OPIC_007_%28C%29%20FH%20Campus%20Wien-David%20Bohmann%20%28Large%29.jpg")
+                        .bgImg("https://i.imgur.com/fICDEUI.png")
                         .nodes(List.of(
                                         Node.builder()
                                                 .type(NodeType.Console)
                                                 .pos(Position.builder()
-                                                        .x(250)
-                                                        .y(125)
+                                                        .x(0.625)
+                                                        .y(0.3)
                                                         .build())
                                                 .nodeInfos(ConsoleNodeInfo.builder()
                                                         .outputID(save.getId())
                                                         .codeSnipped(save.getFunctionSignature())
-                                                        .desc("I can only try one combination at a time. Find the correct one!")
-                                                        .returnType("4 digit integer")
-                                                        .exampleInput(save.getInput())
+                                                        .desc("The door is locked by a passcode, next to the door is some encrypted text. Maybe I will find some hints in the room of what to do with it")
+                                                        .returnType("String")
+                                                        .exampleInput("\"Hello i am the input\"")
                                                         .png("png.url")
                                                         .title("INPUT")
                                                         .build())
@@ -195,31 +152,28 @@ public class EscaperoomService {
                                         Node.builder()
                                                 .type(NodeType.Details)
                                                 .pos(Position.builder()
-                                                        .x(250)
-                                                        .y(125)
+                                                        .x(0.475)
+                                                        .y(0.3)
                                                         .build()
                                                 )
                                                 .nodeInfos(DetailsNodeInfo.builder()
-                                                        .desc("This item is really strange, I wonder if it still works...")
-                                                        .png("https://media.istockphoto.com/id/145132637/de/foto/alte-telefon.jpg?s=612x612&w=0&k=20&c=vKbE1neCPbp1AAdNZuW042vAxt7liMV52tEIAsHNjqs=")
-                                                        .title("An old Phone")
+                                                        .desc("This photo look familiar, I wonder if he would have known what to do?")
+                                                        .png("https://asset.museum-digital.org/brandenburg/images/202004/gaius-julius-caesar-100-44-v-chr-38964.jpg")
+                                                        .title("An old friend")
                                                         .build())
                                                 .build(),
                                         Node.builder()
-                                                .type(NodeType.Data)
-                                                .pos(Position.builder().x(250).y(125).build()
+                                                .type(NodeType.Story)
+                                                .pos(Position.builder().x(0.03).y(0.75).build()
                                                 )
                                                 .nodeInfos(DataNodeInfo.builder()
-                                                        .title("Object output")
-                                                        .desc("Some story like object description")
-                                                        .parameterType("A string containing the letters")
-                                                        .exampleOutput("ASDFGAIKVNAKSDNFJIVNHAEKW").build())
-                                                .build(),
-                                        Node.builder()
-                                                .type(NodeType.Zoom)
-                                                .pos(Position.builder().x(250).y(125).build()
-                                                )
-                                                .nodeInfos(ZoomNodeInfo.builder().build())
+                                                        .title("Introduction & Story")
+                                                        .desc(
+                                                                "You fell asleep on Friday while studying for an exam at " +
+                                                                        "the university. When you wake up on Saturday morning, " +
+                                                                        "you realize the mess that you got yourself into. While you were asleep," +
+                                                                        "the university got closed for the weekend and now you somehow have to get out of here...")
+                                                        .build())
                                                 .build()
                                 )
                         ).build()
@@ -229,52 +183,45 @@ public class EscaperoomService {
         List<Scenes> m3 = List.of(
                 Scenes.builder()
                         .name("secondScene")
-                        .bgImg("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsZSaFZ-nKGSkIEane9_ucnaElVrGkxLlOyQ&usqp=CAU")
+                        .bgImg("https://images.unsplash.com/photo-1592256410394-51c948ec13d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80")
                         .nodes(List.of(
                                         Node.builder()
                                                 .type(NodeType.Console)
                                                 .pos(Position.builder()
-                                                        .x(250)
-                                                        .y(125)
+                                                        .x(0.77)
+                                                        .y(0.58)
                                                         .build())
                                                 .nodeInfos(ConsoleNodeInfo.builder()
                                                         .outputID(save2.getId())
                                                         .codeSnipped(save2.getFunctionSignature())
-                                                        .desc("I can only see true and false I have seen this format before ")
+                                                        .desc("A list of boolean lists that seem to have some meaning")
+                                                        .title("Elevator Terminal")
                                                         .returnType("The current floor as integer")
-                                                        .exampleInput("[ [true,false,true], [true,false,false,false] ]")
+                                                        .exampleInput("[[true,false,true], [true,false,false,false]]")
                                                         .png("png.url")
-                                                        .title("INPUT")
                                                         .build())
                                                 .build(),
                                         Node.builder()
                                                 .type(NodeType.Details)
                                                 .pos(Position.builder()
-                                                        .x(250)
-                                                        .y(125)
+                                                        .x(0.155)
+                                                        .y(0.5)
                                                         .build()
                                                 )
                                                 .nodeInfos(DetailsNodeInfo.builder()
-                                                        .desc("I can see that the even sum needs to be subtracted form the odd sum")
-                                                        .png("https://de.wikipedia.org/wiki/Matt_Riddle#/media/Datei:Matt_Riddle_August_2017.jpg")
-                                                        .title("An Old Chad")
+                                                        .desc("On a note in the elevator is written 'The sum of the odd and the sum of the even numbers... but what's the *difference*'?")
+                                                        .png("https://img.freepik.com/freie-ikonen/mathematischen-operationszeichen-innerhalb-der-quadrate_318-35091.jpg")
+                                                        .title("Even diff Odd")
                                                         .build())
                                                 .build(),
                                         Node.builder()
-                                                .type(NodeType.Data)
-                                                .pos(Position.builder().x(250).y(125).build()
+                                                .type(NodeType.Story)
+                                                .pos(Position.builder().x(0.125).y(0.2).build()
                                                 )
                                                 .nodeInfos(DataNodeInfo.builder()
-                                                        .title("Object output")
-                                                        .desc("Some story like object description")
-                                                        .parameterType("A string containing the letters")
-                                                        .exampleOutput("ASDFGAIKVNAKSDNFJIVNHAEKW").build())
-                                                .build(),
-                                        Node.builder()
-                                                .type(NodeType.Zoom)
-                                                .pos(Position.builder().x(250).y(125).build()
-                                                )
-                                                .nodeInfos(ZoomNodeInfo.builder().build())
+                                                        .title("Riddle 2")
+                                                        .desc("After finally getting out the room, you realize that your only way out of this floor is the elevator. Unfortunatelly, the software seems to be corrupted. Instead of Floors, you only get weird true / false lists. Maybe there is a way decipher which floor you have to go to.")
+                                                        .build())
                                                 .build()
                                 )
                         ).build()

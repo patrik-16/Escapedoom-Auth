@@ -4,6 +4,7 @@ import com.escapedoom.gamesession.data.EscapeRoomDao;
 import com.escapedoom.gamesession.data.codeCompiling.*;
 import com.escapedoom.gamesession.data.response.JoinResponse;
 import com.escapedoom.gamesession.data.response.StageResponse;
+import com.escapedoom.gamesession.data.response.StatusReturn;
 import com.escapedoom.gamesession.repositories.*;
 import com.escapedoom.gamesession.utils.CodeSniptes;
 import com.escapedoom.gamesession.utils.SseEmitterExtended;
@@ -124,11 +125,7 @@ public class PlayerStateManagementService {
             lobby.setState(EscapeRoomState.STOPPED);
             switch (lobby.getState()) {
                 case JOINABLE -> {
-                    for (SseEmitterExtended sseEmitterExtended : sseEmitters) {
-                        if (sseEmitterExtended.getHttpID().equals(httpSessionID)) {
-                            sseEmitters.remove(sseEmitterExtended);
-                        }
-                    }
+                    sseEmitters.removeIf(sseEmitterExtended -> sseEmitterExtended.getHttpID().equals(httpSessionID));
                     return JoinResponse.builder()
                             .state(lobby.getState())
                             .sessionId(httpSessionID)
@@ -193,8 +190,6 @@ public class PlayerStateManagementService {
 
     public SseEmitterExtended lobbyConnection(String httpId) {
 
-        //TODO CHECK IF SESSION IS STILL JOINABLE
-
         SseEmitterExtended sseEmitter = new SseEmitterExtended();
         sseEmitter.onTimeout(() -> {
             sseEmitter.complete();
@@ -213,8 +208,6 @@ public class PlayerStateManagementService {
         sseEmitter.setName(player.getName());
         sseEmitters.add(sseEmitter);
 
-        //TODO JOINIG ON PLAYING HANDELEN
-
         try {
             sseEmitter.send(SseEmitter.event().name(YOUR_NAME_EVENT).data(sseEmitter.getName()));
             var players = sessionManagementRepository.findAllByEscaperoomSession(player.getEscaperoomSession());
@@ -225,7 +218,7 @@ public class PlayerStateManagementService {
             }
             sseEmitter.send(SseEmitter.event().name(ALL_NAME_EVENT).data(jsonPlayers.toString()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println("should not happen");;
         }
         sseEmitter.onCompletion(() -> {
             synchronized (this.sseEmitters) {
@@ -305,13 +298,21 @@ public class PlayerStateManagementService {
                 if (lobbyId.get().getState() == EscapeRoomState.PLAYING) {
                     return StageResponse.builder()
                             .stage(escapeRoomRepo.getEscapeRoomStageByEscaperoomIDAndStageNumber(curr.get().getEscampeRoom_room_id(), curr.get().getEscaperoomStageId()))
+                            .roomID(lobbyId.get().getLobbyId())
                             .state(lobbyId.get().getState()).build();
+                } else if (lobbyId.get().getState() == EscapeRoomState.JOINABLE) {
+                    return StageResponse.builder()
+                            .stage(new ArrayList<>())
+                            .state(lobbyId.get().getState())
+                            .roomID(lobbyId.get().getLobbyId())
+                            .build();
                 }
             }
         }
         return StageResponse.builder()
                 .stage(new ArrayList<>())
                 .state(EscapeRoomState.STOPPED)
+                .roomID(null)
                 .build();
     }
 
@@ -368,7 +369,7 @@ public class PlayerStateManagementService {
         var process = compilingProcessRepository.findById(message.key());
         if (process.isPresent()) {
             ProcessingRequest processingRequest = process.get();
-            processingRequest.setOutput(message.value().replace("\n", ""));
+            processingRequest.setOutput(message.value());
             processingRequest.setCompilingStatus(CompilingStatus.Done);
             compilingProcessRepository.save(processingRequest);
         } else {
@@ -389,13 +390,12 @@ public class PlayerStateManagementService {
                     if (escapeRoomDaoByStageIdAndRoomId.isPresent()) {
                         Optional<ConsoleNodeCode> byId = codeRiddleRepository.findById(escapeRoomDaoByStageIdAndRoomId.get().getOutputID());
                         if (byId.isPresent()) {
-                            if (compilingProcessRepositoryById.get().getOutput().equals(byId.get().getExpectedOutput())) {
+                            if (compilingProcessRepositoryById.get().getOutput().replace("\n","").equals(byId.get().getExpectedOutput())) {
                                 Long maxStage = escapeRoomRepo.getMaxStage(playerByHttpSessionID.get().getEscampeRoom_room_id());
                                 if (playerByHttpSessionID.get().getEscaperoomStageId() + 1 < maxStage) {
                                     Player player = playerByHttpSessionID.get();
                                     player.setEscaperoomStageId(playerByHttpSessionID.get().getEscaperoomStageId() + 1);
-                                    //TODO CHANGE THE ADDED AMOUNT TO THE TIMESTAMP
-                                    player.setScore(player.getScore() + 30L);
+                                    player.setScore(player.getScore() + 10L * playerByHttpSessionID.get().getEscaperoomStageId());
                                     Optional<OpenLobbys> byLobbyId = openLobbyRepository.findByLobbyId(player.getEscaperoomSession());
                                     player.setLastStageSolved(byLobbyId.get().getStartTime().until(LocalDateTime.now(), ChronoUnit.SECONDS));
                                     sessionManagementRepository.save(player);
@@ -403,8 +403,12 @@ public class PlayerStateManagementService {
                                     return CodeStatus.builder().status(CState.SUCCESS).output(compilingProcessRepositoryById.get().getOutput()).build();
                                 } else {
                                     // won ROOM
-                                    return CodeStatus.builder().status(CState.WON).output(compilingProcessRepositoryById.get().getOutput()).build();
+                                    Player player = playerByHttpSessionID.get();
+                                    player.setScore(player.getScore() + 10L * playerByHttpSessionID.get().getEscaperoomStageId());
+                                    sessionManagementRepository.save(player);
+                                    return CodeStatus.builder().status(CState.WON).output(playerByHttpSessionID.get().getEscaperoomSession().toString()).build();
                                 }
+
                             } else {
                                 CState c = CState.COMPILED;
                                 if (compilingProcessRepositoryById.get().getOutput().equals("COMPILE ERROR")) {
@@ -427,4 +431,22 @@ public class PlayerStateManagementService {
             return CodeStatus.builder().status(CState.BADREQUEST).output("").build();
         }
     }
+
+    public StatusReturn getCurrentStatus(String playerID) {
+        var curr = sessionManagementRepository.findPlayerByHttpSessionID(playerID);
+        if (curr.isPresent()) {
+            Optional<OpenLobbys> lobbyId = openLobbyRepository.findByLobbyId(curr.get().getEscaperoomSession());
+            if (lobbyId.isPresent()) {
+                    return StatusReturn.builder()
+                            .state(lobbyId.get().getState())
+                            .roomID(lobbyId.get().getLobbyId())
+                            .build();
+            }
+        }
+        return StatusReturn.builder()
+                .state(EscapeRoomState.STOPPED)
+                .roomID(null)
+                .build();
+    }
+
 }

@@ -2,11 +2,13 @@ package com.escapedoom.gamesession.controller;
 
 import com.escapedoom.gamesession.data.codeCompiling.CodeStatus;
 import com.escapedoom.gamesession.data.response.StageResponse;
+import com.escapedoom.gamesession.data.response.StatusReturn;
 import com.escapedoom.gamesession.utils.SseEmitterExtended;
 import com.escapedoom.gamesession.data.Player;
 import com.escapedoom.gamesession.data.codeCompiling.CodeCompilingRequestEvent;
 import com.escapedoom.gamesession.data.response.JoinResponse;
 import com.escapedoom.gamesession.services.PlayerStateManagementService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -65,4 +67,8 @@ public class JoinController {
         return playerStateManagementService.getResult(playerID);
     }
 
+    @GetMapping(value = "status/{playerID}")
+    public StatusReturn getCurrentStatusByPlayerID(@PathVariable String playerID) {
+        return playerStateManagementService.getCurrentStatus(playerID);
+    }
 }
