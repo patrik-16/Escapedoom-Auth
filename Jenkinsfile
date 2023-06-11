@@ -37,8 +37,8 @@ pipeline {
                     }
                 echo pwd()
                 }
-            }
-        }
+
+
 
         stage('test LectorPortal') {
             steps {
@@ -50,7 +50,7 @@ pipeline {
                 echo pwd()
                 }
             }
-        }
+
 
         stage('deploy') {
             steps {
@@ -59,5 +59,5 @@ pipeline {
                 echo 'Done!'
             }
         }
-    }
-}
+
+
