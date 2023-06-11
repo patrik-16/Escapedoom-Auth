@@ -7,7 +7,7 @@ pipeline {
                 echo 'GameSession maven install...'
                 dir('GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn clean install'
+                        sh 'mvn clean install'
                     }
                 }
             }
@@ -18,18 +18,18 @@ pipeline {
                 echo 'GameSession maven test...'
                 dir('GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn test'
+                        sh 'mvn test'
                     }
                 }
             }
         }
 
-                stage('install LectorPortal') {
+        stage('install LectorPortal') {
             steps {
                 echo 'LectorPortal maven install...'
                 dir('LectorPortal') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn clean install'
+                        sh 'mvn clean install'
                     }
                 }
             }
@@ -40,7 +40,7 @@ pipeline {
                 echo 'LectorPortal maven test...'
                 dir('LectorPortal') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn test'
+                        sh 'mvn test'
                     }
                 }
             }
@@ -48,7 +48,7 @@ pipeline {
 
         stage('deploy') {
             steps {
-                echo 'maven deploay...'
+                echo 'maven deploy...'
 
                 echo 'Done!'
             }
