@@ -7,7 +7,7 @@ pipeline {
                 echo 'GameSession maven install...'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn -f /GameSession/pom.xml clean install'
+                    sh 'mvn -f GameSession/pom.xml clean install'
                 }
                 echo pwd()
             }
@@ -18,7 +18,7 @@ pipeline {
                 echo 'GameSession maven test...'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn -f /GameSession/pom.xml clean test'
+                    sh 'mvn -f GameSession/pom.xml clean test'
                 }
                 echo pwd()
             }
@@ -29,7 +29,7 @@ pipeline {
                 echo 'LectorPortal maven install...'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn -f /LectorPortal/pom.xml clean install'
+                    sh 'mvn -f LectorPortal/pom.xml clean install'
                 }
                 echo pwd()
             }
@@ -40,7 +40,7 @@ pipeline {
                 echo 'LectorPortal maven test...'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn -f /LectorPortal/pom.xml clean test'
+                    sh 'mvn -f LectorPortal/pom.xml clean test'
                 }
                 echo pwd()
             }
