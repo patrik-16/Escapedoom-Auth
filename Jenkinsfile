@@ -2,9 +2,9 @@ pipeline {
     agent any
 
     stages {
-        stage('install') {
+        stage('install GameSession') {
             steps {
-                echo 'maven install...'
+                echo 'GameSession maven install...'
                 dir('GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn clean install'
@@ -13,10 +13,32 @@ pipeline {
             }
         }
 
-        stage('test') {
+        stage('test GameSession') {
             steps {
-                echo 'maven test...'
+                echo 'GameSession maven test...'
                 dir('GameSession') {
+                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn test'
+                    }
+                }
+            }
+        }
+
+                stage('install LectorPortal') {
+            steps {
+                echo 'LectorPortal maven install...'
+                dir('LectorPortal') {
+                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn clean install'
+                    }
+                }
+            }
+        }
+
+        stage('test LectorPortal') {
+            steps {
+                echo 'LectorPortal maven test...'
+                dir('LectorPortal') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn test'
                     }
@@ -27,11 +49,7 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'maven deploay...'
-                dir('GameSession') {
-                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn deploy'
-                    }
-                }
+
                 echo 'Done!'
             }
         }
