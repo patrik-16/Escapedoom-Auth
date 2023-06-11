@@ -6,11 +6,10 @@ pipeline {
             steps {
                 echo 'GameSession maven install...'
 
-                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                        sh 'mvn - f /pipeline-test-1/GameSession/pom.xml clean install'
-                    }
-                echo pwd()
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn -f /pipeline-test-1/GameSession/pom.xml clean install'
                 }
+                echo pwd()
             }
         }
 
@@ -18,11 +17,10 @@ pipeline {
             steps {
                 echo 'GameSession maven test...'
 
-                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                        sh 'mvn - f /pipeline-test-1/GameSession/pom.xml clean test'
-                    }
-                echo pwd()
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn -f /pipeline-test-1/GameSession/pom.xml clean test'
                 }
+                echo pwd()
             }
         }
 
@@ -30,27 +28,23 @@ pipeline {
             steps {
                 echo 'LectorPortal maven install...'
 
-                        withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                            sh 'mvn - f /pipeline-test-1/LectorPortal/pom.xml clean install'
-                        }
-                    echo pwd()
-                    }
-                echo pwd()
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn -f /pipeline-test-1/LectorPortal/pom.xml clean install'
                 }
-
-
+                echo pwd()
+            }
+        }
 
         stage('test LectorPortal') {
             steps {
                 echo 'LectorPortal maven test...'
 
-                    withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                        sh 'mvn - f /pipeline-test-1/LectorPortal/pom.xml clean test'
-                    }
-                echo pwd()
+                withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
+                    sh 'mvn -f /pipeline-test-1/LectorPortal/pom.xml clean test'
                 }
+                echo pwd()
             }
-
+        }
 
         stage('deploy') {
             steps {
@@ -59,5 +53,5 @@ pipeline {
                 echo 'Done!'
             }
         }
-
-
+    }
+}
