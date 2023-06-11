@@ -5,10 +5,11 @@ pipeline {
         stage('install GameSession') {
             steps {
                 echo 'GameSession maven install...'
-                dir('EscapeDoom/GameSession') {
+                dir('GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn clean install'
                     }
+                pwd
                 }
             }
         }
@@ -16,10 +17,11 @@ pipeline {
         stage('test GameSession') {
             steps {
                 echo 'GameSession maven test...'
-                dir('EscapeDoom/GameSession') {
+                dir('GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn test'
                     }
+                pwd
                 }
             }
         }
@@ -31,6 +33,7 @@ pipeline {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn clean install'
                     }
+                pwd
                 }
             }
         }
@@ -42,6 +45,7 @@ pipeline {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn test'
                     }
+                pwd
                 }
             }
         }
