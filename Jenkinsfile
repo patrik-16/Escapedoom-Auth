@@ -9,7 +9,7 @@ pipeline {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn clean install'
                     }
-                pwd
+                echo pwd()
                 }
             }
         }
@@ -21,7 +21,7 @@ pipeline {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn test'
                     }
-                pwd
+                echo pwd()
                 }
             }
         }
@@ -33,7 +33,7 @@ pipeline {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn clean install'
                     }
-                pwd
+                echo pwd()
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn test'
                     }
-                pwd
+                echo pwd()
                 }
             }
         }
