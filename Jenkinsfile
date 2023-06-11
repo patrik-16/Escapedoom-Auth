@@ -5,7 +5,7 @@ pipeline {
         stage('install GameSession') {
             steps {
                 echo 'GameSession maven install...'
-                dir('GameSession') {
+                dir('EscapeDoom/GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn clean install'
                     }
@@ -16,7 +16,7 @@ pipeline {
         stage('test GameSession') {
             steps {
                 echo 'GameSession maven test...'
-                dir('GameSession') {
+                dir('EscapeDoom/GameSession') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn test'
                     }
@@ -27,7 +27,7 @@ pipeline {
         stage('install LectorPortal') {
             steps {
                 echo 'LectorPortal maven install...'
-                dir('LectorPortal') {
+                dir('EscapeDoom/LectorPortal') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn clean install'
                     }
@@ -38,7 +38,7 @@ pipeline {
         stage('test LectorPortal') {
             steps {
                 echo 'LectorPortal maven test...'
-                dir('LectorPortal') {
+                dir('EscapeDoom/LectorPortal') {
                     withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                         sh 'mvn test'
                     }
