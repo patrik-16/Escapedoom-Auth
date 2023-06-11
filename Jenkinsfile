@@ -24,23 +24,23 @@ pipeline {
             }
         }
 
-        stage('install LectorPortal') {
+        stage('install LectorPotral') {
             steps {
-                echo 'LectorPortal maven install...'
+                echo 'LectorPotral maven install...'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn -f LectorPortal/pom.xml clean install'
+                    sh 'mvn -f LectorPotral/pom.xml clean install'
                 }
                 echo pwd()
             }
         }
 
-        stage('test LectorPortal') {
+        stage('test LectorPotral') {
             steps {
-                echo 'LectorPortal maven test...'
+                echo 'LectorPotral maven test...'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
-                    sh 'mvn -f LectorPortal/pom.xml clean test'
+                    sh 'mvn -f LectorPotral/pom.xml clean test'
                 }
                 echo pwd()
             }
