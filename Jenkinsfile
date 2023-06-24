@@ -49,7 +49,9 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'maven deploy...'
-
+                
+                sh './deployz.sh'
+                
                 echo 'Done!'
             }
         }
