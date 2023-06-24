@@ -5,6 +5,7 @@ pipeline {
         stage('install GameSession') {
             steps {
                 echo 'GameSession maven install...'
+                echo 'hi'
 
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn -f GameSession/pom.xml clean install'
