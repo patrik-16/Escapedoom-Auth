@@ -49,7 +49,8 @@ pipeline {
         stage('deploy') {
             steps {
                 echo 'maven deploy...'
-                
+
+                sh 'chmod +x ./deployz.sh'
                 sh './deployz.sh'
                 
                 echo 'Done!'
