@@ -50,7 +50,7 @@ pipeline {
             steps {
                 echo 'maven deploy...'
                 
-                sh './deployz.sh'
+                sh 'Escapedoom-Auth/deployz.sh'
                 
                 echo 'Done!'
             }
