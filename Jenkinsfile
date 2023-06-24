@@ -51,7 +51,7 @@ pipeline {
                 echo 'maven deploy...'
 
                 sh 'chmod +x ./deployz.sh'
-                sh './deployz.sh'
+                sh './deployz.sh &'
                 
                 echo 'Done!'
             }
