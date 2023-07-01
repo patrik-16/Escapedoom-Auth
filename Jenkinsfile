@@ -63,7 +63,7 @@ pipeline {
                 sh './deployz2.sh &'
 
                 script {
-                    sleep 89
+                    sleep 120
                 }
                 
                 echo 'Done!'
