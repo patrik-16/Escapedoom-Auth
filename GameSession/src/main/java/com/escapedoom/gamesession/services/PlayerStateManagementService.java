@@ -76,7 +76,7 @@ public class PlayerStateManagementService {
         add("Ice");
         add("Phoenix");
         add("Ghost");
-        add("Balloon");
+        add("Star");
     }};
 
     private ArrayList<String> secondNames = new ArrayList<>() {{
@@ -98,7 +98,7 @@ public class PlayerStateManagementService {
         add("Rider");
         add("Bringer");
         add("Reaper");
-        add("King");
+        add("Attack");
     }};
 
     private final Random random = new Random();
