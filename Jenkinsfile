@@ -5,12 +5,9 @@ pipeline {
         stage('install GameSession') {
             steps {
                 echo 'GameSession maven install...'
-                echo 'hi'
-
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn -f GameSession/pom.xml clean install'
                 }
-                echo pwd()
             }
         }
 
@@ -21,7 +18,6 @@ pipeline {
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn -f GameSession/pom.xml clean test'
                 }
-                echo pwd()
             }
         }
 
@@ -32,18 +28,15 @@ pipeline {
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn -f LectorPotral/pom.xml clean install'
                 }
-                echo pwd()
             }
         }
 
         stage('test LectorPotral') {
             steps {
                 echo 'LectorPotral maven test...'
-
                 withMaven(globalMavenSettingsConfig: '', jdk: '', maven: 'Maven3', mavenSettingsConfig: '', traceability: true) {
                     sh 'mvn -f LectorPotral/pom.xml clean test'
                 }
-                echo pwd()
             }
         }
 
@@ -55,17 +48,14 @@ pipeline {
                 sh 'chmod +x ./deployz2.sh'
 
                 sh './deployz1.sh'
-
                 script {
                     sleep 5
                 }
 
                 sh './deployz2.sh &'
-
                 script {
                     sleep 120
                 }
-                
                 echo 'Done!'
             }
         }
